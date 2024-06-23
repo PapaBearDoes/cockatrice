@@ -1,28 +1,45 @@
-version: '3'
+name: servatrice
 
 services:
-  mysql:
-    image: mysql
-    command: --sql_mode=
+  db:
+    image: mariadb
+    container_name: db
+    restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=root-password
-      - MYSQL_DATABASE=servatrice
-      - MYSQL_USER=servatrice
-      - MYSQL_PASSWORD=password
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: servatrice
+      MYSQL_USER: servatrice
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    command: --sql_mode=
     volumes:
-      - $PWD/servatrice/servatrice.sql:/docker-entrypoint-initdb.d/servatrice.sql
+      - ./servatrice/servatrice.sql:/docker-entrypoint-initdb.d/servatrice.sql
+    networks:
+      - servatrice_net
+    healthcheck:
+      interval: 5s
+      timeout: 30s
+      retries: 3
+      start_period: 60s
+      start_interval: 5s
+      test: healthcheck.sh --connect --innodb_initialized || exit 1
 
   servatrice:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: servatrice
-    depends_on:
-      - mysql
-    ports:
-      - "4747:4747"
-      - "4748:4748"
+    image: ghcr.io/papabeardoes/servatrice:latest
+    container_name: servatrice
+    restart: unless-stopped
     entrypoint: "/bin/bash -c 'sleep 10; servatrice --config /tmp/servatrice.ini --log-to-console'"
-    restart: always
     volumes:
-      - $PWD/servatrice/docker/servatrice-docker.ini:/tmp/servatrice.ini
+      - ./servatrice/docker/servatrice-docker.ini:/tmp/servatrice.ini
+    networks:
+      - servatrice_net
+    ports:
+      - 4747:4747
+      - 4748:4748
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+networks:
+  servatrice_net:
+    driver: bridge
+    attachable: true
