@@ -14,14 +14,14 @@ services:
     volumes:
       - ./servatrice/servatrice.sql:/docker-entrypoint-initdb.d/servatrice.sql
     networks:
-      - servatrice_net
+      - net
     healthcheck:
       interval: 5s
       timeout: 30s
       retries: 3
       start_period: 60s
       start_interval: 5s
-      test: healthcheck.sh --connect --innodb_initialized || exit 1
+      test: healthcheck.sh --connect || exit 1
 
   servatrice:
     image: ghcr.io/papabeardoes/servatrice:latest
@@ -31,15 +31,15 @@ services:
     volumes:
       - ./servatrice/docker/servatrice-docker.ini:/tmp/servatrice.ini
     networks:
-      - servatrice_net
+      - net
     ports:
       - 4747:4747
       - 4748:4748
     depends_on:
-      mariadb:
+      db:
         condition: service_healthy
 
 networks:
-  servatrice_net:
+  net:
     driver: bridge
     attachable: true
