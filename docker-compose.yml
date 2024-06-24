@@ -11,7 +11,7 @@ services:
       MYSQL_DATABASE: servatrice
       MYSQL_USER: servatrice
     volumes:
-      - ${PWD}/servatrice/servatrice.sql:/docker-entrypoint-initdb.d/servatrice.sql
+      - ./servatrice/config/servatrice.sql:/docker-entrypoint-initdb.d/servatrice.sql
     networks:
       - net
     healthcheck:
@@ -26,9 +26,9 @@ services:
     image: ghcr.io/papabeardoes/servatrice:latest
     container_name: servatrice
     restart: unless-stopped
-    entrypoint: "/bin/bash -c 'sleep 10; servatrice --config /tmp/servatrice.ini --log-to-console'"
+    entrypoint: "/bin/bash -c 'sleep 10; servatrice --config /home/servatrice/config/servatrice.ini --log-to-console'"
     volumes:
-      - ${PWD}/servatrice/docker/servatrice-docker.ini:/tmp/servatrice.ini
+      - ./servatrice/config:/home/servatrice/config
     networks:
       - net
     ports:
