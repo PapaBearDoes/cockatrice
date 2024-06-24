@@ -11,8 +11,7 @@ ENV HOME=/home/servatrice
 #########################
 RUN apt -y update
 RUN apt -y upgrade
-RUN apt -y --no-install-recommends install\
- build-essential\
+RUN apt -y --no-install-recommends install build-essential\
  ccache\
  clang-format\
  cmake\
