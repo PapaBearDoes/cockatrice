@@ -7,10 +7,9 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: servatrice
       MYSQL_USER: servatrice
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-    command: --sql_mode=
     volumes:
       - ./servatrice/servatrice.sql:/docker-entrypoint-initdb.d/servatrice.sql
     networks:
