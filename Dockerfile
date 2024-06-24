@@ -4,40 +4,55 @@
 FROM debian:bookworm-slim
 MAINTAINER PapaBearDoes <papabeardoes@gmail.com>
 
+ENV HOME=/home/servatrice
+
 #########################
 # Update / Install Filesystem
 #########################
 RUN apt -y update
 RUN apt -y upgrade
-RUN apt -y install build-essential\
+RUN apt -y --no-install-recommends install\
+ build-essential\
+ ccache\
+ clang-format\
  cmake\
+ file\
+ g++\
  git\
+ libgl-dev\
+ liblzma-dev\
+ libmariadb-dev-compat\
  libprotobuf-dev\
+ libqt6multimedia6\
  libqt6sql6-mysql\
- libmariadb-dev\
- libqt6websockets6-dev\
+ qt6-svg-dev\
+ qt6-websockets-dev\
  protobuf-compiler\
- qt6-base-dev\
- qt6-tools-dev
+ qt6-l10n-tools\
+ qt6-multimedia-dev\
+ qt6-tools-dev\
+ qt6-tools-dev-tools
 
 #########################
 # Copy / Prep Backend
 #########################
-COPY . /home/servatrice/code/
-WORKDIR /home/servatrice/code
+RUN mkdir -p ${HOME}/code/build
+COPY . ${HOME}/code/
+WORKDIR ${HOME}/code
 
 #########################
 # Build Software
 #########################
-WORKDIR build
+WORKDIR ${HOME}/code/build
 RUN cmake .. -DWITH_SERVER=1\
  -DWITH_CLIENT=0\
  -DWITH_ORACLE=0\
  -DWITH_DBCONVERTER=0
-RUN make
-RUN make install
+RUN cmake --build .
+RUN make package
+RUN dpkg -i ./Cockatrice*.deb
 
-WORKDIR /home/servatrice
+WORKDIR ${HOME}
 
 EXPOSE 4747
 
