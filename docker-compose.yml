@@ -11,7 +11,7 @@ services:
       MYSQL_DATABASE: servatrice
       MYSQL_USER: servatrice
     volumes:
-      - ./servatrice/servatrice.sql:/docker-entrypoint-initdb.d/servatrice.sql
+      - ${PWD}/servatrice/servatrice.sql:/docker-entrypoint-initdb.d/servatrice.sql
     networks:
       - net
     healthcheck:
@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
     entrypoint: "/bin/bash -c 'sleep 10; servatrice --config /tmp/servatrice.ini --log-to-console'"
     volumes:
-      - ./servatrice/docker/servatrice-docker.ini:/tmp/servatrice.ini
+      - ${PWD}/servatrice/docker/servatrice-docker.ini:/tmp/servatrice.ini
     networks:
       - net
     ports:
