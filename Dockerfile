@@ -2,7 +2,6 @@
 # Build Servatrice
 #########################
 FROM debian:bookworm-slim
-MAINTAINER PapaBearDoes <papabeardoes@gmail.com>
 
 ENV HOME=/home/servatrice
 
