@@ -50,6 +50,14 @@ export class RoomPersistence {
   }
 
   static removeMessages(roomId: number, name: string, amount: number): void {
-    console.log('removeMessages', roomId, name, amount);
+    RoomsDispatch.removeMessages(roomId, name, amount);
   };
+
+  static gameCreated(roomId: number) {
+    RoomsDispatch.gameCreated(roomId);
+  }
+
+  static joinedGame(roomId: number, gameId: number) {
+    RoomsDispatch.joinedGame(roomId, gameId);
+  }
 }
