@@ -2,6 +2,11 @@
 # Build Servatrice
 #########################
 FROM debian:bookworm-slim
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
 ENV HOME=/home/servatrice
 
